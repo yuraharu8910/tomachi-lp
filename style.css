@@ -30,6 +30,15 @@
   --font-body: 'Noto Sans JP', sans-serif;
 }
 
+/* サイト全体の文字が小さいという指摘への対応。
+   remは「html要素の文字サイズ」からの倍率で決まる単位なので、
+   （bodyではなく）ここhtmlに指定する必要があります。
+   前回はbodyに指定してしまっていたため、remを使っている各セクションの
+   文字サイズには反映されていませんでした */
+html {
+  font-size: 119%;
+}
+
 body {
   background: var(--color-canvas);
   font-family: var(--font-body);
@@ -79,9 +88,13 @@ a {
   padding: 18px 24px 46px;
   background-size: cover;
   background-position: center;
-  /* 固定pxの高さではなく、元デザイン(354×516)と同じ縦横比を指定。
-     カード幅が変わっても写真の見え方（トリミング量）が変わらないようにしています */
-  aspect-ratio: 354 / 516;
+  /* 画面いっぱいに表示したいというご要望に合わせて、
+     アスペクト比指定から「画面の高さいっぱい」に変更。
+     100dvh は「ブラウザのアドレスバー等を除いた実際の表示高さ」を指す単位で、
+     スマホのSafari/Chromeでアドレスバーの出し引きがあってもズレにくいです。
+     dvhに未対応の古いブラウザ向けに、まず100vhを指定してからdvhで上書きしています */
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .fv__overlay {
@@ -347,7 +360,7 @@ a {
   font-size: 0.78rem;
   line-height: 1.5;
   box-shadow: 0 1px 4px rgba(27, 42, 74, 0.08);
-  max-width: 85%;
+  max-width: 95%;
 }
 
 .bubble--left {

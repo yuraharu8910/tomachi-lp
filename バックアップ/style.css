@@ -35,6 +35,10 @@ body {
   font-family: var(--font-body);
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
+  /* サイト全体の文字が小さいという指摘への対応。
+     rem単位はこの基準サイズ(初期値16px)からの倍率で決まるため、
+     ここを大きくするだけでサイト全体の文字サイズが一括で大きくなります */
+  font-size: 118%;
 }
 
 img {
@@ -79,9 +83,13 @@ a {
   padding: 18px 24px 46px;
   background-size: cover;
   background-position: center;
-  /* 固定pxの高さではなく、元デザイン(354×516)と同じ縦横比を指定。
-     カード幅が変わっても写真の見え方（トリミング量）が変わらないようにしています */
-  aspect-ratio: 354 / 516;
+  /* 画面いっぱいに表示したいというご要望に合わせて、
+     アスペクト比指定から「画面の高さいっぱい」に変更。
+     100dvh は「ブラウザのアドレスバー等を除いた実際の表示高さ」を指す単位で、
+     スマホのSafari/Chromeでアドレスバーの出し引きがあってもズレにくいです。
+     dvhに未対応の古いブラウザ向けに、まず100vhを指定してからdvhで上書きしています */
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .fv__overlay {
@@ -500,6 +508,12 @@ a {
   scroll-snap-type: x proximity;
   /* 指を離すとカードの位置でピタッと止まる */
   -webkit-overflow-scrolling: touch;
+  /* スクロールバーを非表示にする（3セクション共通） */
+  scrollbar-width: none;       /* Firefox */
+  -ms-overflow-style: none;    /* 旧Edge / IE */
+}
+.scroll-row::-webkit-scrollbar {
+  display: none; /* Chrome / Safari */
 }
 
 .scene-card {
@@ -664,7 +678,8 @@ a {
    ⑧ 来場者の声
 ========================================================== */
 .voice-card {
-  flex: 0 0 220px;
+  flex: 0 0 190px;
+  /* .scene-card / .lodging-card と同じ幅に統一 */
   scroll-snap-align: start;
   background: #fff;
   border-radius: 12px;
