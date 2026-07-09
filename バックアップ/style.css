@@ -1,0 +1,777 @@
+/* ==========================================================
+   とおまち夏花火ナイト LP スタイルシート
+   スマホファースト：まずスマホ表示を基準に書き、
+   画面が広くなるほど @media (min-width: ...) で調整を足していきます
+========================================================== */
+
+/* ---- 共通リセット ---- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* padding を含めてサイズ計算するので、幅がズレにくくなります */
+}
+
+/* ---- ブランドカラー・共通変数 ----
+   :root に色をまとめておくと、あとで色を変えたいときに
+   ここ1箇所を直すだけで全体に反映されます */
+:root {
+  --color-navy: #1B2A4A;
+  /* 夜空の紺（Primary） */
+  --color-cream: #FFF6E5;
+  /* 提灯のあたたかい白（Secondary） */
+  --color-accent: #E8633C;
+  /* 花火・夜店の赤橙（Accent） */
+  --color-text: #333333;
+  /* 本文 */
+  --color-canvas: #EFEAE0;
+  /* カードの外側（PC表示時の背景） */
+  --font-heading: 'Zen Maru Gothic', sans-serif;
+  --font-body: 'Noto Sans JP', sans-serif;
+}
+
+body {
+  background: var(--color-canvas);
+  font-family: var(--font-body);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* ==========================================================
+   全体を包むフレーム
+   スマホでは画面いっぱい、PC / タブレットでは中央に
+   スマホサイズのカードとして表示させます
+========================================================== */
+.lp-frame {
+  width: 100%;
+  max-width: 480px;
+  /* この幅を超える画面ではカード状に中央寄せ */
+  margin: 0 auto;
+  background: var(--color-cream);
+  overflow: hidden;
+  position: relative;
+}
+
+@media (min-width: 481px) {
+  .lp-frame {
+    margin-top: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.12);
+    border-radius: 20px;
+  }
+}
+
+/* ==========================================================
+   ① ファーストビュー（FV）
+========================================================== */
+.fv {
+  position: relative;
+  overflow: hidden;
+  padding: 18px 24px 46px;
+  background-size: cover;
+  background-position: center;
+  /* 固定pxの高さではなく、元デザイン(354×516)と同じ縦横比を指定。
+     カード幅が変わっても写真の見え方（トリミング量）が変わらないようにしています */
+  aspect-ratio: 354 / 516;
+}
+
+.fv__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+      rgba(27, 42, 74, 0.65) 0%,
+      rgba(27, 42, 74, 0.25) 45%,
+      rgba(27, 42, 74, 0.15) 65%,
+      rgba(27, 42, 74, 0.75) 100%);
+}
+
+.fv__inner {
+  position: relative;
+  width: 100%;
+}
+
+/* ボタン＋統計行を、写真の下端にぴったり固定する。
+   .fv に position:relative があるので、ここでの absolute は .fv 基準になります */
+.fv__bottom {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 46px;
+}
+
+.fv__kicker {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--color-cream);
+  opacity: 0.85;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+  margin-bottom: 14px;
+}
+
+.fv__title {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 2.4rem;
+  /* 元は40pxですが、画面幅が狭い端末でも折り返さないよう少し抑えています */
+  line-height: 1.4;
+  color: var(--color-cream);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.fv__title-accent {
+  color: #ffb199;
+}
+
+.fv__lead {
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--color-cream);
+  opacity: 0.95;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+  margin-bottom: 20px;
+}
+
+.fv__ctas {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.fv__stats {
+  display: flex;
+  justify-content: space-around;
+  gap: 8px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 246, 229, 0.2);
+  font-size: 0.65rem;
+  color: var(--color-cream);
+  opacity: 0.9;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+  flex-wrap: wrap;
+}
+
+/* ==========================================================
+   ボタン共通パーツ（.btn）
+   色違い・幅違いは修飾クラス（--primary, --outline, --block）で切り替えます
+========================================================== */
+.btn {
+  display: inline-block;
+  text-align: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 14px 8px;
+  border-radius: 999px;
+  flex: 1;
+  border: 1.5px solid transparent;
+}
+
+.btn--primary {
+  background: var(--color-accent);
+  color: var(--color-cream);
+}
+
+.btn--outline {
+  background: transparent;
+  color: var(--color-cream);
+  border-color: var(--color-cream);
+}
+
+.btn--block {
+  display: block;
+  width: 100%;
+}
+
+/* CTAセクション最後のボタンをふわっと目立たせる（脈打つような動き） */
+@keyframes ctaPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(232, 99, 60, 0.55);
+  }
+
+  50% {
+    transform: scale(1.035);
+    box-shadow: 0 0 0 10px rgba(232, 99, 60, 0);
+  }
+}
+
+.btn--pulse {
+  animation: ctaPulse 2.2s ease-in-out infinite;
+}
+
+/* ==========================================================
+   セクション共通レイアウト
+========================================================== */
+.section {
+  padding: 36px 30px 24px;
+  position: relative;
+}
+
+.section--light {
+  background: var(--color-cream);
+}
+
+.section--dark {
+  background: var(--color-navy);
+  padding: 48px 24px 36px;
+}
+
+/* セクションの上端を丸くくり抜いて、前のセクションに乗っかっているように見せる装飾 */
+.section--round-top {
+  border-radius: 40px 40px 0 0;
+}
+
+.section--center {
+  text-align: center;
+}
+
+.section__title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  color: var(--color-navy);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.section__title--on-dark {
+  color: var(--color-cream);
+  margin-bottom: 6px;
+}
+
+.section__sub {
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--color-cream);
+  opacity: 0.8;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.section-heading-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.section-heading-row__icon {
+  width: 64px;
+  flex-shrink: 0;
+}
+
+.section-heading-row__title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--color-cream);
+}
+
+.label {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.75rem;
+  margin-bottom: 10px;
+}
+
+.label--accent {
+  color: var(--color-accent);
+  margin-top: 14px;
+}
+
+/* ==========================================================
+   ② 悩み・あるある / ③ 解決　共通：とおま＋一言 の並び
+========================================================== */
+.empathy-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.empathy-row--reverse {
+  flex-direction: row-reverse;
+}
+
+.empathy-row__icon {
+  width: 84px;
+  flex-shrink: 0;
+}
+
+.empathy-row__text {
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+/* 吹き出し付きの写真カード */
+.bubble-card {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  aspect-ratio: 306 / 280;
+  /* 元デザインの比率のまま、幅が変わっても縦長写真の見え方を保つ */
+  margin-bottom: 22px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+}
+
+.bubble-card__inner {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 16px 80px;
+}
+
+.bubble {
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px 18px;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  box-shadow: 0 1px 4px rgba(27, 42, 74, 0.08);
+  max-width: 85%;
+}
+
+.bubble--left {
+  align-self: flex-start;
+  margin-left: 6px;
+}
+
+.bubble--right {
+  align-self: flex-end;
+  margin-right: 6px;
+}
+
+/* 吹き出しが画面に入ったらフワッと表示するアニメーション
+   （script.js の IntersectionObserver が .is-visible クラスを付与します） */
+.bubble-in {
+  opacity: 0;
+}
+
+.bubble-in.is-visible {
+  animation: bubbleIn 0.6s ease-out forwards;
+}
+
+@keyframes bubbleIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================
+   ③ 解決：3つのミニ統計カード
+========================================================== */
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px 8px;
+}
+
+.stat-card__num {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.1rem;
+  color: var(--color-accent);
+}
+
+.stat-card__label {
+  font-size: 0.65rem;
+  margin-top: 4px;
+}
+
+/* 動画ボックス */
+.video-box {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 306 / 180;
+  /* 元デザインの比率のまま */
+  margin-bottom: 24px;
+  background: #000;
+}
+
+.video-box video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-box__playhint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  /* 再生ボタンの上に重ねているだけなので、クリックは下の video に通す */
+}
+
+.video-box__playhint-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-box__playhint-triangle {
+  width: 0;
+  height: 0;
+  border-top: 11px solid transparent;
+  border-bottom: 11px solid transparent;
+  border-left: 18px solid #fff;
+  margin-left: 4px;
+}
+
+/* ==========================================================
+   ④ イベント情報・観覧席
+========================================================== */
+.ticket-card {
+  background: var(--color-cream);
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.ticket-card__icon {
+  width: 60px;
+  flex-shrink: 0;
+}
+
+.ticket-card__title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--color-navy);
+}
+
+.ticket-card__desc {
+  font-size: 0.7rem;
+  line-height: 1.5;
+  margin-top: 2px;
+}
+
+/* ==========================================================
+   ⑤ 来場シーン / ⑧ 来場者の声 共通：横スクロールカード列
+========================================================== */
+.scroll-row {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 4px 4px 14px;
+  margin: 0 -4px;
+  scroll-snap-type: x proximity;
+  /* 指を離すとカードの位置でピタッと止まる */
+  -webkit-overflow-scrolling: touch;
+}
+
+.scene-card {
+  flex: 0 0 190px;
+  /* 町内の宿・ごはんセクションのカード(.lodging-card)と同じ幅に統一 */
+  scroll-snap-align: start;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(27, 42, 74, 0.08);
+}
+
+.scene-card__photo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  /* .lodging-card__photo と同じ比率に統一 */
+  background-size: cover;
+  background-position: center;
+}
+
+.scene-card__body {
+  padding: 12px 14px 16px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+.scene-card__icon {
+  width: 40px;
+  flex-shrink: 0;
+}
+
+/* ==========================================================
+   ⑥ ベネフィット
+========================================================== */
+.float-icon {
+  width: 100px;
+  margin: 0 auto 8px;
+  animation: ctaFloat 3s ease-in-out infinite;
+  /* ふわふわ浮遊 */
+}
+
+@keyframes ctaFloat {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.tag-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+.tag {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.75rem;
+  padding: 8px 16px;
+  border-radius: 999px;
+  color: var(--color-cream);
+}
+
+.tag--navy {
+  background: var(--color-navy);
+}
+
+.tag--accent {
+  background: var(--color-accent);
+}
+
+/* ==========================================================
+   ⑦ 宿泊施設・飲食店
+========================================================== */
+.map-box {
+  border-radius: 14px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  /* イラストマップの縦横比(4:3)に合わせて、左右が切れすぎないようにする */
+  margin-bottom: 26px;
+  background-size: cover;
+  background-position: center;
+}
+
+.lodging-card {
+  flex: 0 0 190px;
+  scroll-snap-align: start;
+  background: var(--color-cream);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.lodging-card__photo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  /* 宿泊施設の写真(4:3)に合わせて調整 */
+  background-size: cover;
+  background-position: center;
+}
+
+/* 写真が未設定の間だけ使うプレースホルダー見た目。
+   実際の写真を用意したら、HTML側の style="background-image:..." に差し替えて
+   このクラス（lodging-card__photo--placeholder）は外してください */
+.lodging-card__photo--placeholder {
+  background: repeating-linear-gradient(45deg,
+      #e6ded0,
+      #e6ded0 10px,
+      #dcd2bf 10px,
+      #dcd2bf 20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: var(--color-navy);
+  text-align: center;
+  padding: 8px;
+}
+
+.lodging-card__body {
+  padding: 12px 14px 16px;
+}
+
+.lodging-card__title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--color-navy);
+}
+
+.lodging-card__desc {
+  font-size: 0.68rem;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+.food-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.food-chip {
+  background: var(--color-cream);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.68rem;
+  color: var(--color-navy);
+}
+
+/* ==========================================================
+   ⑧ 来場者の声
+========================================================== */
+.voice-card {
+  flex: 0 0 220px;
+  scroll-snap-align: start;
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 4px rgba(27, 42, 74, 0.08);
+}
+
+.voice-card__text {
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.voice-card__who {
+  display: block;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.65rem;
+  color: var(--color-accent);
+  font-style: normal;
+  margin-top: 8px;
+}
+
+/* ==========================================================
+   ⑨ FAQ（アコーディオン）
+========================================================== */
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 19px;
+  margin-bottom: 19px;
+}
+
+.faq {
+  background: #fff;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+.faq summary {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: var(--color-navy);
+  cursor: pointer;
+}
+
+.faq summary::-webkit-details-marker {
+  display: none;
+  /* Safari のデフォルト三角マーカーを消す */
+}
+
+.faq p {
+  font-size: 0.72rem;
+  line-height: 1.6;
+  margin-top: 6px;
+}
+
+/* ==========================================================
+   ⑩ CTA（最終セクション）
+========================================================== */
+.section--cta {
+  background-size: cover;
+  background-position: center;
+  text-align: center;
+  padding: 48px 24px 40px;
+}
+
+.cta-title {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 1.4rem;
+  line-height: 1.5;
+  color: var(--color-cream);
+  margin-bottom: 6px;
+}
+
+.cta-sub {
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--color-cream);
+  opacity: 0.8;
+  margin-bottom: 22px;
+}
+
+.cta-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 26px;
+}
+
+.footer-note {
+  border-top: 1px solid rgba(255, 246, 229, 0.2);
+  padding-top: 18px;
+  font-size: 0.65rem;
+  line-height: 1.8;
+  color: var(--color-cream);
+  opacity: 0.6;
+  text-align: left;
+}
+
+/* ==========================================================
+   タブレット以上での微調整（お好みで拡張してください）
+========================================================== */
+@media (min-width: 481px) {
+  .section--round-top:first-of-type {
+    border-radius: 40px 40px 0 0;
+  }
+}
