@@ -1,9 +1,10 @@
 // ==========================================================
 // とおまち夏花火ナイト LP スクリプト
-// このファイルがやっていることは大きく3つです
+// このファイルがやっていることは大きく4つです
 //   1. 吹き出し（.bubble-in）が画面に入ったらフワッと表示する
 //   2. 動画の再生/一時停止に合わせて、中央の再生ボタンを出し入れする
 //   3. 横スクロールカード列（.scroll-row）が画面に入ったら自動でスクロールする
+//   4. FVを過ぎたら、画面下に固定CTAバーを表示する
 // ==========================================================
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -168,6 +169,49 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
   });
+
+  // ---- 4. FVと最終CTAセクションを過ぎている間だけ、画面下に固定CTAバーを表示する ----
+  // FV／最終CTAセクション自身にも同じ内容のボタンがあるため、
+  // どちらかが画面に見えている間は固定バーを隠して「CTAの二重表示」を防ぎます。
+  var fv = document.querySelector('.fv');
+  var finalCta = document.querySelector('.section--cta');
+  var stickyCta = document.getElementById('sticky-cta');
+
+  if (stickyCta && (fv || finalCta)) {
+    var fvVisible = false;
+    var finalCtaVisible = false;
+
+    // fvVisible・finalCtaVisible の状態から、固定バーの表示/非表示を決める
+    function updateStickyCta() {
+      if (!fvVisible && !finalCtaVisible) {
+        stickyCta.classList.add('is-visible');
+      } else {
+        stickyCta.classList.remove('is-visible');
+      }
+    }
+
+    if ('IntersectionObserver' in window) {
+      if (fv) {
+        new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            fvVisible = entry.isIntersecting;
+            updateStickyCta();
+          });
+        }, { threshold: 0 }).observe(fv);
+      }
+      if (finalCta) {
+        new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            finalCtaVisible = entry.isIntersecting;
+            updateStickyCta();
+          });
+        }, { threshold: 0 }).observe(finalCta);
+      }
+    } else {
+      // 古いブラウザでは常に表示しておく
+      stickyCta.classList.add('is-visible');
+    }
+  }
 
 });
 

@@ -160,6 +160,10 @@ a {
   gap: 10px;
   margin-bottom: 18px;
 }
+/* P2-8: 「観覧席を予約する」を主導線として少し大きく見せる（LINE相談は残しつつ強弱をつける） */
+.fv__ctas .btn--primary {
+  flex: 1.4;
+}
 
 .fv__stats {
   display: flex;
@@ -188,6 +192,35 @@ a {
   border-radius: 999px;
   flex: 1;
   border: 1.5px solid transparent;
+  /* スマホでタップした時に、丸ボタンなのに四角くハイライトが光る現象を防ぐ */
+  -webkit-tap-highlight-color: transparent;
+  /* hover/active時の変化を滑らかにする */
+  transition: transform 0.15s ease, opacity 0.15s ease, background-color 0.15s ease;
+}
+
+/* 押した瞬間（スマホのタップ・PCのクリック両方）に少し縮んで押した感を出す */
+.btn:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+/* キーボード操作（Tabキー）でボタンにフォーカスした時にわかるようにする（アクセシビリティ対応） */
+.btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* @media(hover:hover) は「マウスでの操作ができる環境」だけに絞る指定です。
+   これが無いと、スマホでボタンをタップした後に指を離しても
+   hoverの見た目が少し残ってしまうことがあります */
+@media (hover: hover) {
+  .btn--primary:hover {
+    background: #d5572f; /* accentより少し濃いめ */
+  }
+
+  .btn--outline:hover {
+    background: rgba(255, 246, 229, 0.12);
+  }
 }
 
 .btn--primary {
@@ -204,6 +237,10 @@ a {
 .btn--block {
   display: block;
   width: 100%;
+}
+/* P2-7: ブロックボタンを連続で並べたときに、隙間が無くくっつかないようにする */
+.btn--block + .btn--block {
+  margin-top: 10px;
 }
 
 /* CTAセクション最後のボタンをふわっと目立たせる（脈打つような動き） */
@@ -229,7 +266,7 @@ a {
    セクション共通レイアウト
 ========================================================== */
 .section {
-  padding: 36px 30px 24px;
+  padding: 36px 28px 24px;
   position: relative;
 }
 
@@ -514,11 +551,15 @@ a {
   /* 指を離すとカードの位置でピタッと止まる */
   -webkit-overflow-scrolling: touch;
   /* スクロールバーを非表示にする（3セクション共通） */
-  scrollbar-width: none;       /* Firefox */
-  -ms-overflow-style: none;    /* 旧Edge / IE */
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* 旧Edge / IE */
 }
+
 .scroll-row::-webkit-scrollbar {
-  display: none; /* Chrome / Safari */
+  display: none;
+  /* Chrome / Safari */
 }
 
 .scene-card {
@@ -559,20 +600,7 @@ a {
 .float-icon {
   width: 100px;
   margin: 0 auto 8px;
-  animation: ctaFloat 3s ease-in-out infinite;
-  /* ふわふわ浮遊 */
-}
-
-@keyframes ctaFloat {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-8px);
-  }
+  object-fit: cover; /* <video> になっても縦横比が崩れないように */
 }
 
 .tag-row {
@@ -601,6 +629,54 @@ a {
 }
 
 /* ==========================================================
+   P2-6: ベネフィットセクション内の「一日の流れ」タイムライン
+========================================================== */
+.day-flow {
+  max-width: 340px;
+  margin: 28px auto 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left; /* 親セクションが text-align:center のため、ここで左寄せに戻す */
+}
+
+.day-flow__step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+}
+
+/* ステップ同士をつなぐ縦の線（最後のステップ以外に表示） */
+.day-flow__step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 27px; /* アイコン(56px)の中央あたり */
+  top: 56px;
+  width: 2px;
+  height: 20px;
+  background: rgba(27, 42, 74, 0.15);
+}
+
+.day-flow__icon {
+  width: 56px;
+  flex-shrink: 0;
+}
+
+.day-flow__time {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.68rem;
+  color: var(--color-accent);
+}
+
+.day-flow__text {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  margin-top: 2px;
+}
+
+/* ==========================================================
    ⑦ 宿泊施設・飲食店
 ========================================================== */
 .map-box {
@@ -608,9 +684,19 @@ a {
   overflow: hidden;
   aspect-ratio: 4 / 3;
   /* イラストマップの縦横比(4:3)に合わせて、左右が切れすぎないようにする */
-  margin-bottom: 26px;
+  margin-bottom: 12px;
   background-size: cover;
   background-position: center;
+}
+
+/* MAP — テキストリンク（実際のGoogleマップを開く） */
+.map-embed__link {
+  display: inline-block;
+  font-size: 0.8rem;
+  color: var(--color-cream);
+  opacity: 0.85;
+  text-decoration: underline;
+  margin-bottom: 26px;
 }
 
 .lodging-card {
@@ -785,6 +871,54 @@ a {
   color: var(--color-cream);
   opacity: 0.6;
   text-align: left;
+}
+
+/* ==========================================================
+   P1-4: CTAボタン用マイクロコピー（安心材料）
+   明るい背景（section--light）向けがデフォルト、
+   紺色背景（section--dark／CTAセクション）では --on-dark 修飾クラスを併用する
+========================================================== */
+.btn-microcopy {
+  text-align: center;
+  font-size: 0.68rem;
+  color: var(--color-navy);
+  opacity: 0.6;
+  margin-top: 8px;
+}
+.btn-microcopy--on-dark {
+  color: var(--color-cream);
+  opacity: 0.7;
+}
+
+/* ==========================================================
+   P1-2: スクロール追従の固定フッターCTA
+   FVが画面内にある間はscript.jsが .is-visible を外して非表示にする
+========================================================== */
+.sticky-cta {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  bottom: 0;
+  width: 100%;
+  max-width: 480px; /* .lp-frame と同じ幅に揃える */
+  display: flex;
+  gap: 10px;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+  background: var(--color-navy);
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  opacity: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  pointer-events: none; /* 非表示中は下に隠れたボタンなどを誤タップしないように */
+}
+.sticky-cta.is-visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+.sticky-cta .btn {
+  font-size: 0.8rem;
+  padding: 12px 8px;
 }
 
 /* ==========================================================
