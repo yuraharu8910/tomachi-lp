@@ -10,7 +10,7 @@
 
   <!-- canonical URL：http/https・www有無などの重複URL対策。
        TODO: 実際の公開URLに差し替えてください（例：GitHub Pagesならリポジトリの公開URL） -->
-  <link rel="canonical" href="https://your-domain.example/">
+  <link rel="canonical" href="https://yuraharu8910.github.io/tomachi-lp/">
 
   <!-- OGP：SNS（Reels・X・LINEなど）でリンクをシェアされた時のカード表示に使われます -->
   <meta property="og:type" content="website">
@@ -18,9 +18,13 @@
   <meta property="og:title" content="とおまち夏花火ナイト｜気合いを入れすぎなくていい、ふらっと行ける夏の特別">
   <meta property="og:description" content="3,000発の花火、駅から徒歩10分、混雑ゆったり。気合いを入れすぎなくていい、ふらっと寄れる夏の特別を、とおまちで。">
   <!-- TODO: 実際の公開URL・OGP画像URLに差し替えてください（画像は1200×630px推奨） -->
-  <meta property="og:url" content="https://your-domain.example/">
-  <meta property="og:image" content="https://your-domain.example/images/bg-fv.jpg">
+  <meta property="og:url" content="https://yuraharu8910.github.io/tomachi-lp/">
+  <meta property="og:image" content="https://yuraharu8910.github.io/tomachi-lp/images/bg-fv.jpg">
   <meta property="og:locale" content="ja_JP">
+  <!-- 追加すると良い例 -->
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/jpeg">
 
   <!-- Twitter Card：og:title等を流用しつつ、大きい画像カード表示にする指定 -->
   <meta name="twitter:card" content="summary_large_image">
@@ -449,16 +453,19 @@
         有料観覧席 ¥1,500（税込）／前日17時まで無料キャンセル可
       </p>
 
-      <label class="reservation-modal__label" for="res-name">お名前<span class="reservation-modal__required">必須</span></label>
+      <label class="reservation-modal__label" for="res-name">お名前<span
+          class="reservation-modal__required">必須</span></label>
       <input type="text" id="res-name" name="name" class="reservation-modal__input" required autocomplete="name">
 
-      <label class="reservation-modal__label" for="res-email">メールアドレス<span class="reservation-modal__required">必須</span></label>
+      <label class="reservation-modal__label" for="res-email">メールアドレス<span
+          class="reservation-modal__required">必須</span></label>
       <input type="email" id="res-email" name="email" class="reservation-modal__input" required autocomplete="email">
 
       <label class="reservation-modal__label" for="res-tel">電話番号</label>
       <input type="tel" id="res-tel" name="tel" class="reservation-modal__input" autocomplete="tel">
 
-      <label class="reservation-modal__label" for="res-count">人数<span class="reservation-modal__required">必須</span></label>
+      <label class="reservation-modal__label" for="res-count">人数<span
+          class="reservation-modal__required">必須</span></label>
       <select id="res-count" name="count" class="reservation-modal__input" required>
         <option value="">選択してください</option>
         <option value="1">1名</option>
@@ -469,7 +476,8 @@
       </select>
 
       <label class="reservation-modal__label" for="res-note">備考（任意）</label>
-      <textarea id="res-note" name="note" class="reservation-modal__input reservation-modal__textarea" rows="3"></textarea>
+      <textarea id="res-note" name="note" class="reservation-modal__input reservation-modal__textarea"
+        rows="3"></textarea>
 
       <button type="submit" class="btn btn--primary btn--block">この内容で予約する</button>
       <p class="reservation-modal__note">送信後、担当より確認のご連絡をいたします。</p>
