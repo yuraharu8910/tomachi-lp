@@ -46,6 +46,24 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* カード（.lp-frame）が画面幅いっぱいにならない481px以上の画面で、
+   左右に見える余白部分に壁紙を敷く。
+   background-attachment:fixed にすることで、コンテンツ側だけがスクロールし、
+   壁紙自体はその場に固定されたまま（＝壁紙の上をスクロールしていくように）見せられます。
+   スマホ（480px以下）はカードが画面いっぱいで余白が無いため、
+   画像を読み込まずに済むよう481px以上だけに限定しています */
+@media (min-width: 481px) {
+  body {
+    /* 画像の上に半透明のクリーム色を重ねることで、色味を薄く・落ち着かせています。
+       重ねる色を薄くしたい/濃くしたい場合は rgba(...) の最後の数値（0〜1）を調整してください */
+    background-image: linear-gradient(rgba(255, 246, 229, 0.72), rgba(255, 246, 229, 0.72)), url('images/bg-wallpaper.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+}
+
 img {
   max-width: 100%;
   display: block;
@@ -192,6 +210,10 @@ a {
   border-radius: 999px;
   flex: 1;
   border: 1.5px solid transparent;
+  /* <button>要素にも同じクラスを使うため、ブラウザ標準の見た目をリセットする */
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
   /* スマホでタップした時に、丸ボタンなのに四角くハイライトが光る現象を防ぐ */
   -webkit-tap-highlight-color: transparent;
   /* hover/active時の変化を滑らかにする */
@@ -420,6 +442,18 @@ a {
   animation: bubbleIn 0.6s ease-out forwards;
 }
 
+/* 汎用の「画面に入ったらフワッと表示」クラス。
+   .bubble-in と同じ仕組み・同じアニメーションを、吹き出し以外の要素
+   （数字カードや一日の流れのステップなど）にも使い回せるようにしたものです。
+   要素に style="animation-delay:.15s" のように付けると、時間差で表示できます */
+.reveal-in {
+  opacity: 0;
+}
+
+.reveal-in.is-visible {
+  animation: bubbleIn 0.6s ease-out forwards;
+}
+
 @keyframes bubbleIn {
   from {
     opacity: 0;
@@ -600,7 +634,7 @@ a {
 .float-icon {
   width: 100px;
   margin: 0 auto 8px;
-  object-fit: cover; /* <video> になっても縦横比が崩れないように */
+  object-fit: contain; /* 全身が見切れないよう、箱に収まるサイズに縮小して表示する */
 }
 
 .tag-row {
@@ -823,10 +857,21 @@ a {
   /* Safari のデフォルト三角マーカーを消す */
 }
 
+/* FAQの開閉をなめらかにするための仕組み。
+   <details>の開閉自体は一瞬で切り替わってしまうため、
+   中身を .faq__panel で囲み、その max-height を script.js から
+   アニメーションさせることで「スーッと開閉する」動きを実現しています */
+.faq__panel {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.25s ease;
+}
+
 .faq p {
   font-size: 0.72rem;
   line-height: 1.6;
   margin-top: 6px;
+  padding-bottom: 2px; /* 開いた時に文字の下端が窮屈に見えないための余白 */
 }
 
 /* ==========================================================
@@ -921,11 +966,513 @@ a {
   padding: 12px 8px;
 }
 
+/* ボタン+マイクロコピーの組を横並びさせるための入れ物（SP〜通常PC幅） */
+.sticky-cta__item {
+  flex: 1;
+  min-width: 0;
+}
+.sticky-cta__item .btn {
+  width: 100%;
+}
+.sticky-cta__note {
+  text-align: center;
+  font-size: 0.62rem;
+  color: var(--color-cream);
+  opacity: 0.7;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
 /* ==========================================================
    タブレット以上での微調整（お好みで拡張してください）
 ========================================================== */
 @media (min-width: 481px) {
   .section--round-top:first-of-type {
     border-radius: 40px 40px 0 0;
+  }
+}
+
+/* ==========================================================
+   観覧席予約のポップアップフォーム（<dialog>）
+========================================================== */
+.reservation-modal {
+  border: none;
+  border-radius: 20px;
+  padding: 0;
+  width: min(90vw, 400px);
+  max-height: 85vh;
+  overflow-y: auto;
+  background: var(--color-cream);
+  color: var(--color-text);
+  /* <dialog>は本来 margin:auto (+ position:absolute; inset:0;) で
+     画面中央に自動配置されるが、ページ全体の * { margin:0; } リセットで
+     打ち消されてしまうため、ここで明示的に指定し直している */
+  margin: auto;
+}
+
+/* <dialog>を開いた時に自動生成される背景の暗いオーバーレイ */
+.reservation-modal::backdrop {
+  background: rgba(27, 42, 74, 0.55);
+}
+
+.reservation-modal__form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 24px 24px;
+}
+
+.reservation-modal__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(27, 42, 74, 0.08);
+  color: var(--color-navy);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.reservation-modal__title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--color-navy);
+  margin-bottom: 8px;
+  padding-right: 32px; /* 閉じるボタンと文字が重ならないように */
+}
+
+.reservation-modal__desc {
+  font-size: 0.75rem;
+  line-height: 1.6;
+  opacity: 0.75;
+  margin-bottom: 20px;
+}
+
+.reservation-modal__label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-navy);
+  margin-bottom: 6px;
+  margin-top: 14px;
+}
+.reservation-modal__label:first-of-type {
+  margin-top: 0;
+}
+
+.reservation-modal__required {
+  color: var(--color-accent);
+  font-weight: 700;
+  font-size: 0.65rem;
+  margin-left: 4px;
+}
+
+.reservation-modal__input {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  padding: 10px 12px;
+  border: 1.5px solid rgba(27, 42, 74, 0.2);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--color-text);
+  -webkit-appearance: none;
+  appearance: none;
+}
+.reservation-modal__input:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.reservation-modal__textarea {
+  resize: vertical;
+}
+
+.reservation-modal__form .btn {
+  margin-top: 22px;
+}
+
+.reservation-modal__note {
+  font-size: 0.68rem;
+  opacity: 0.6;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.reservation-modal__success {
+  text-align: center;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  padding: 20px 0 4px;
+}
+.reservation-modal__success .btn {
+  margin-top: 18px;
+}
+
+/* ==========================================================================
+   PC（デスクトップ）向けレスポンシブスタイル
+   ここから下は、幅1024px以上の画面にだけ適用される追加スタイルです。
+   SP（スマホ）側のCSSは一切変更していません。すべて「上書き」で対応しています。
+   ========================================================================== */
+@media (min-width: 1024px) {
+
+  /* ---- 全体のフレーム ----
+     タブレット用の「カードが浮いた」見た目（box-shadow・角丸）をやめて、
+     ふつうのWebサイトらしい、画面幅いっぱいに近いレイアウトにする */
+  .lp-frame {
+    max-width: 1100px;
+    margin: 0 auto;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  /* ---- セクション共通：左右の余白を広げ、文字の横幅を読みやすい程度に制限する ----
+     calc()で「画面幅から880pxを引いた残りの半分」を左右の余白にすることで、
+     内容が中央に幅880pxくらいで収まるようにしています。
+     max()を使っているのは、1024px付近の画面でも余白が狭くなりすぎないようにするためです */
+  .section {
+    padding-top: 72px;
+    padding-bottom: 56px;
+    padding-left: max(48px, calc((100% - 880px) / 2));
+    padding-right: max(48px, calc((100% - 880px) / 2));
+  }
+
+  .section--dark {
+    padding-top: 80px;
+    padding-bottom: 64px;
+  }
+
+  /* ---- 見出し・本文サイズをPCらしく少し大きくする ---- */
+  .section__title {
+    font-size: 1.7rem;
+    margin-bottom: 28px;
+  }
+
+  .section__sub {
+    font-size: 0.85rem;
+  }
+
+  .section-heading-row__title {
+    font-size: 1.4rem;
+  }
+
+  .section-heading-row__icon {
+    width: 80px;
+  }
+
+  .label {
+    font-size: 0.8rem;
+  }
+
+  /* ---- ① ファーストビュー ----
+     スマホでは「下寄せ固定」だった構成をやめて、画面の中央あたりに
+     ゆったり配置する、いわゆる普通のPC向けヒーローセクションの組み方にする */
+  .fv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 8%;
+  }
+
+  .fv__inner {
+    max-width: 620px;
+  }
+
+  .fv__kicker {
+    font-size: 0.9rem;
+  }
+
+  .fv__title {
+    font-size: 3.4rem;
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+
+  .fv__lead {
+    font-size: 1.05rem;
+  }
+
+  /* position:absoluteでの下端固定をやめて、通常の流れの中に置く */
+  .fv__bottom {
+    position: static;
+    max-width: 460px;
+    margin-top: 8px;
+  }
+
+  .fv__ctas .btn,
+  .fv__stats {
+    font-size: 0.95rem;
+  }
+
+  /* ---- ②③ とおま + 一言（empathy-row）----
+     アイコンをひと回り大きく、文字も読みやすいサイズに */
+  .empathy-row__icon {
+    width: 120px;
+  }
+
+  .empathy-row__text {
+    font-size: 1.05rem;
+    line-height: 1.8;
+  }
+
+  .empathy-row,
+  .bubble-card,
+  .video-box,
+  .ticket-card,
+  .map-box,
+  .faq-list {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* 「一日の流れ」：グループ全体を1つのまとまりとして中央寄せする。
+     width:fit-content により、箱の幅が「一番長い行の幅」に自動で合わせられるため、
+     各行（アイコン+テキスト）は左詰めのまま、アイコンの縦の並びも揃います。
+     （align-items:centerだと行ごとに個別に中央寄せされ、行の長さが違うとアイコンの
+       位置がバラバラになってしまうため、こちらの方法に変更しました） */
+  .day-flow {
+    width: fit-content;
+    max-width: 460px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .bubble {
+    font-size: 0.9rem;
+  }
+
+  /* ---- ③ 3つの数字カード ---- */
+  .stat-card__num {
+    font-size: 1.5rem;
+  }
+
+  .stat-card__label {
+    font-size: 0.78rem;
+  }
+
+  /* ---- ④来場シーン／⑦宿泊：横スクロールをやめてグリッド表示にする ----
+     マウス操作のPCでは「横にドラッグしてスクロール」が使いにくいため、
+     画面の余裕を活かして自動的に折り返すグリッドに変える。
+     auto-fit + minmax により、カードの枚数に応じて自然に列数が決まります。
+     ただし .scroll-row--carousel（来場者の声）は対象外にして、
+     PCでも横スクロールの自動スライドを維持する（すぐ下で上書き） */
+  .scroll-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    overflow: visible;
+    padding: 4px 0 4px;
+    margin: 0;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* 来場者の声：グリッド化せず、SPと同じ横スクロール＋自動スライドのままにする */
+  .scroll-row.scroll-row--carousel {
+    display: flex;
+    overflow-x: auto;
+    max-width: 700px;
+    padding: 4px 4px 14px;
+    margin: 0 auto;
+  }
+
+  .scene-card__body,
+  .lodging-card__desc,
+  .voice-card__text {
+    font-size: 0.85rem;
+  }
+
+  /* ---- ⑤ イベント情報・観覧席 ---- */
+  .ticket-card__title {
+    font-size: 0.95rem;
+  }
+
+  .ticket-card__desc {
+    font-size: 0.82rem;
+  }
+
+  /* ---- ⑥ ベネフィット：一日の流れを、縦並びから横並びに ---- */
+  .float-icon {
+    width: 130px;
+  }
+
+  .tag {
+    font-size: 0.85rem;
+    padding: 10px 20px;
+  }
+
+  /* ---- ⑨ FAQ：1列 → 2列グリッドにして、余白を有効活用する ---- */
+  .faq-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    max-width: 840px;
+  }
+
+  .faq summary {
+    font-size: 0.9rem;
+  }
+
+  .faq p {
+    font-size: 0.82rem;
+  }
+
+  /* ---- ⑩ 最終CTA ---- */
+  .cta-title {
+    font-size: 2.1rem;
+  }
+
+  .cta-sub {
+    font-size: 0.95rem;
+  }
+
+  .cta-buttons {
+    flex-direction: row;
+    justify-content: center;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .footer-note {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+
+  /* ---- ボタン：ブロックボタンの横幅を、同じセクション内の他の要素
+     （.ticket-card など、下でmax-width:700pxに揃えているもの）と統一する ---- */
+  .btn--block {
+    width: 100%;
+    max-width: 700px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ---- 予約ポップアップ：PCでは少し大きめに ---- */
+  .reservation-modal {
+    width: min(90vw, 460px);
+  }
+
+  /* ---- 固定フッターCTA：PCでは画面端に接しない浮いたバーになるので、角を丸くする ----
+     （スマホでは画面幅いっぱいに広がるバーのため、ここでは丸めていません）
+     ※すぐ下の「1024〜1599px専用」ブロックで、中サイズPCの見た目はさらに上書きしています */
+  .sticky-cta {
+    border-radius: 16px;
+  }
+}
+
+/* ==========================================================================
+   幅1024〜1599pxの「中サイズPC」画面専用：
+   横長のバーだと本文の文字と重なって読みづらいという指摘への対応。
+   バーをやめて、丸いボタン2つを画面右下に縦に並べる形にする。
+   （1600px以上は、この下の別ブロックでさらに右側パネル型に上書きされます）
+   ========================================================================== */
+@media (min-width: 1024px) and (max-width: 1599px) {
+  .sticky-cta {
+    left: auto;
+    right: 24px;
+    bottom: 24px;
+    /* 非表示の初期状態：右側の画面外にスライドさせておく */
+    transform: translateX(160%);
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    width: auto;
+    max-width: none;
+    /* ベージュの壁紙の上だと白ボタンが見えなくなるため、
+       ネイビーのカードを下敷きにして丸ボタンを乗せる */
+    background: var(--color-navy);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    padding: 20px 18px;
+    border-radius: 20px;
+  }
+
+  .sticky-cta.is-visible {
+    transform: translateX(0);
+  }
+
+  .sticky-cta__item {
+    width: auto;
+  }
+
+  /* 丸ボタンの中に長いボタン文言は収まらないため、吹き出し的な注記は非表示にする */
+  .sticky-cta__note {
+    display: none;
+  }
+
+  /* ボタン自体を、短いラベル（data-short属性）を表示する丸ボタンに作り替える */
+  .sticky-cta .btn {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    font-size: 0;
+    /* 元の長いボタン文言(観覧席を予約する 等)は非表示にする */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  }
+
+  .sticky-cta .btn::before {
+    content: attr(data-short);
+    /* HTML側のdata-short属性の短いラベルをここに表示する */
+    display: block;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.68rem;
+    line-height: 1.35;
+    text-align: center;
+    white-space: pre-line;
+    /* data-short内の改行(&#10;)をそのまま2行として表示する */
+  }
+}
+
+/* ==========================================================================
+   幅1600px以上の広いPC画面：固定CTAを画面右側の余白部分に
+   縦型のミニパネルとして表示する（.lp-frameは1100px幅で中央寄せのため、
+   1600px以上あれば右側に十分な余白ができる計算です）
+   1024〜1599pxの間は、これまで通り画面下部中央のバーのままです。
+   ========================================================================== */
+@media (min-width: 1600px) {
+  .sticky-cta {
+    left: auto;
+    right: 28px;
+    bottom: 28px;
+    /* 非表示の初期状態：右側の画面外にスライドさせておく */
+    transform: translateX(120%);
+    max-width: 220px;
+    width: 220px;
+    flex-direction: column;
+    gap: 14px;
+    padding: 20px 18px;
+    border-radius: 18px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+  }
+
+  /* 表示状態：右から画面内にスライドインしてくる */
+  .sticky-cta.is-visible {
+    transform: translateX(0);
+  }
+
+  .sticky-cta__item {
+    width: 100%;
+  }
+
+  .sticky-cta .btn {
+    font-size: 0.85rem;
+    padding: 13px 8px;
+  }
+
+  .sticky-cta__note {
+    font-size: 0.68rem;
   }
 }
