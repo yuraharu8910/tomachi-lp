@@ -60,13 +60,27 @@
   <div class="lp-frame">
 
     <!-- ============ ① ファーストビュー（FV） ============ -->
-    <header class="fv" style="background-image:url('images/bg-fv.jpg');">
-      <div class="fv__overlay"></div>
-      <div class="fv__inner">
-        <p class="fv__kicker">とおまち観光協会 presents</p>
-        <h1 class="fv__title">とおまち<br>夏花火<span class="fv__title-accent">ナイト</span>。</h1>
-        <p class="fv__lead">気合いを入れすぎなくていい、ふらっと寄れる夏の特別。<br>3,000発の花火｜8月中旬の土曜 開催</p>
+<header class="fv">
+  <!-- 背景動画（poster＝動画が読み込まれるまで／再生できない環境で表示される代わりの画像）
+       3本の動画（①とおま／②花火／③商店街）を用意し、script.jsのJSで
+       「Aが終わったらBに、Bが終わったらCに、Cが終わったらAに」と
+       順番にふわっと切り替えながら無限ループさせています。
+       1本のvideoタグにloopを付けるだけの方式だと複数動画の切り替えが
+       できないため、videoタグを3つ重ねてCSSのopacityで
+       見た目だけクロスフェードさせる仕組みにしています。 -->
+  <video id="fvBgVideoA" class="fv__bg-video is-active" src="videos/fv-tooma.mp4" poster="images/bg-fv.jpg" autoplay
+    muted playsinline></video>
+  <video id="fvBgVideoB" class="fv__bg-video" src="videos/fv-bg-fireworks.mp4" muted playsinline></video>
+  <video id="fvBgVideoC" class="fv__bg-video" src="videos/fv-bg-street.mp4" muted playsinline></video>
+    <div class="fv__overlay"></div>
+      <!-- id="fvInner"：動画が切り替わるタイミングで、script.jsがこの中の
+           文字（kicker/title/lead）を動画に合わせて差し替えます -->
+      <div class="fv__inner" id="fvInner">
+        <p class="fv__kicker" id="fvKicker">とおまち観光協会 presents</p>
+        <h1 class="fv__title" id="fvTitle">とおまち<br>夏花火<span class="fv__title-accent">ナイト</span>。</h1>
+        <p class="fv__lead" id="fvLead">気合いを入れすぎなくていい、<br>ふらっと寄れる夏の特別。<br>3,000発の花火｜8月中旬の土曜 開催</p>
       </div>
+
 
       <!-- ボタンと統計行は、写真の一番下にぴったり固定表示させたいので
          position:absolute で明示的に下端に配置しています（flexの微妙な挙動に頼らない方法） -->
@@ -100,8 +114,8 @@
       <div class="bubble-card" style="background-image:url('images/bg-nayami.jpg');">
         <div class="bubble-card__inner">
           <div class="bubble bubble--left bubble-in" style="animation-delay:.1s">毎年混みすぎて、正直疲れる</div>
-          <div class="bubble bubble--right bubble-in" style="animation-delay:.45s">いつも同じ場所で、代わり映えしない</div>
-          <div class="bubble bubble--left bubble-in" style="animation-delay:.8s">わざわざ遠出するのは、少し気が引ける</div>
+          <div class="bubble bubble--right bubble-in" style="animation-delay:.55s">いつも同じ場所で、代わり映えしない</div>
+          <div class="bubble bubble--left bubble-in" style="animation-delay:1s">わざわざ遠出するのは、少し気が引ける</div>
         </div>
       </div>
     </section>

@@ -341,3 +341,119 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
+/* ===================================================
+   FVの背景動画クロスフェード
+   ①とおま → ②花火 → ③商店街 の順に再生し、
+   1本が終わるたびにopacityを入れ替えてふわっと切り替え、
+   これを無限にループさせます
+=================================================== */
+(function () {
+  const videoA = document.getElementById('fvBgVideoA'); // とおま
+  const videoB = document.getElementById('fvBgVideoB'); // 花火
+  const videoC = document.getElementById('fvBgVideoC'); // 商店街
+  if (!videoA || !videoB || !videoC) return; // FVがないページでは何もしない（安全対策）
+
+  const videos = [videoA, videoB, videoC]; // ← ここに3本並べるだけで本数を増減できます
+  let currentIndex = 0; // 今表示中の動画のインデックス
+
+  function crossfadeToNext() {
+    const current = videos[currentIndex];
+    const nextIndex = (currentIndex + 1) % videos.length; // 最後まで来たら0（先頭）に戻る
+    const next = videos[nextIndex];
+
+    next.currentTime = 0;   // 次の動画を頭出し
+    next.play().catch(() => { }); // 自動再生がブロックされた時のエラーは無視
+
+    current.classList.remove('is-active'); // 今の動画をopacity:0へ
+    next.classList.add('is-active');       // 次の動画をopacity:1へ（ここでクロスフェード発生）
+
+    currentIndex = nextIndex;
+  }
+
+  // 各動画は「最後まで再生し終わったら」次へバトンタッチする
+  videos.forEach((video) => {
+    video.addEventListener('ended', crossfadeToNext);
+  });
+})();
+
+/* ===================================================
+   FVの背景動画＋タイトル文字のクロスフェード
+   ①とおま → ②花火 → ③商店街 の順に、
+   動画とタイトル文字を同時にふわっと切り替えながら
+   無限にループさせます
+=================================================== */
+(function () {
+  const videoA = document.getElementById('fvBgVideoA'); // とおま
+  const videoB = document.getElementById('fvBgVideoB'); // 花火
+  const videoC = document.getElementById('fvBgVideoC'); // 商店街
+  const inner = document.getElementById('fvInner');      // タイトル文字全体を囲むdiv
+  const kickerEl = document.getElementById('fvKicker');
+  const titleEl = document.getElementById('fvTitle');
+  const leadEl = document.getElementById('fvLead');
+
+  if (!videoA || !videoB || !videoC || !inner) return; // 要素が無いページでは何もしない（安全対策）
+
+  const videos = [videoA, videoB, videoC];
+
+  // 動画ごとに表示したいコピー（kicker=小見出し／title=大見出し／lead=説明文）
+  // titleとleadは<br>やアクセント文字色<span>を使いたいのでinnerHTMLで差し込みます
+  const slides = [
+    {
+      // ① とおま（マスコット紹介・導入）
+      kicker: 'とおまち観光協会 presents',
+      title: 'とおまち<br>夏花火<span class="fv__title-accent">ナイト</span>。',
+      lead: '気合いを入れすぎなくていい、<br>ふらっと寄れる夏の特別。<br>3,000発の花火｜8月中旬の土曜 開催'
+    },
+    {
+      // ② 花火（迫力・観覧の魅力）
+      kicker: '川沿いで見る、3,000発',
+      title: '顔に届く<br>くらいの<span class="fv__title-accent">迫力</span>を。',
+      lead: '混雑は激しくない、ちょうどいい特等席。<br>終わってもすぐ電車に乗れる近さです'
+    },
+    {
+      // ③ 商店街（食べ歩き・夜のそぞろ歩き）
+      kicker: '夕方から、ふらっと',
+      title: '商店街で<br><span class="fv__title-accent">食べ歩き</span>する夏。',
+      lead: '提灯の灯る夜道を歩くだけで、<br>もう夏の思い出に。<br>気づいたら花火の時間です'
+    }
+  ];
+
+  let currentIndex = 0; // 今表示中の動画・文字のインデックス
+
+  // slides配列の中身を、実際のHTML要素に反映する関数
+  function applySlideText(index) {
+    const slide = slides[index];
+    kickerEl.textContent = slide.kicker; // 記号やタグを含まないので textContent でOK
+    titleEl.innerHTML = slide.title;     // <br>や<span>を使うため innerHTML
+    leadEl.innerHTML = slide.lead;
+  }
+
+  function crossfadeToNext() {
+    const current = videos[currentIndex];
+    const nextIndex = (currentIndex + 1) % videos.length; // 最後まで来たら0（先頭）に戻る
+    const next = videos[nextIndex];
+
+    // ---- 動画側のクロスフェード ----
+    next.currentTime = 0;        // 次の動画を頭出し
+    next.play().catch(() => { }); // 自動再生がブロックされた時のエラーは無視
+    current.classList.remove('is-active');
+    next.classList.add('is-active');
+
+    // ---- 文字側のクロスフェード ----
+    inner.classList.add('is-fading'); // まず文字をopacity:0にする（CSSのtransitionで0.5秒かけて消える）
+
+    // CSSのtransition時間（0.5秒＝500ms）と同じだけ待ってから中身を差し替え、
+    // その後 is-fading を外して再度ふわっと表示させる
+    setTimeout(() => {
+      applySlideText(nextIndex);
+      inner.classList.remove('is-fading');
+    }, 500);
+
+    currentIndex = nextIndex;
+  }
+
+  // 各動画は「最後まで再生し終わったら」次へバトンタッチする
+  videos.forEach((video) => {
+    video.addEventListener('ended', crossfadeToNext);
+  });
+})();
