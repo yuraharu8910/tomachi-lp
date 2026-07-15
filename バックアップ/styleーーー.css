@@ -218,7 +218,7 @@ a {
 }
 
 .fv__lead {
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   /* 0.85rem→0.72remに縮小。スマホでガラス板が大きくなりすぎて
      キャラクターを隠してしまわないようにするための調整 */
   line-height: 1.6;
@@ -228,7 +228,7 @@ a {
   margin-bottom: 14px;
   /* 20px→14px。パネル自体の高さも合わせて詰める */
 
-  /* ---- ここから追加：ネイビーの半透明すりガラスパネル ---- */
+  /* ---- ここから追加：透明（白ベース）のすりガラスパネル ---- */
   display: inline-block;
   /* pタグは本来ブロック要素で横幅いっぱいに伸びますが、
      inline-blockにすることで「中の文字の横幅ぴったり」の
@@ -236,8 +236,11 @@ a {
   padding: 7px 12px;
   /* 10px 16px→7px 12px。文字サイズを縮小した分、余白も比例して縮小 */
   border-radius: 10px;
-  background: rgba(27, 42, 74, 0.45);
-  /* var(--color-navy)の値(#1B2A4A)をrgbaで半透明に。数値を上げるほど濃く不透明になります */
+  background: rgba(255, 255, 255, 0.12);
+  /* ネイビー(rgba(27,42,74,...))ではなく白を薄く重ねることで、
+     色味を付けずに背景の動画がうっすら透けて見える「透明ガラス」に */
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  /* 背景色がほぼ無色になった分、輪郭がぼやけないよう薄い縁取りを追加 */
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   /* backdrop-filter：背後に映っているもの（今回は動画）自体をぼかす、
@@ -266,20 +269,21 @@ a {
   /* 中身（3項目）の実際の幅ぴったりにする＝バッジらしい見た目に */
   margin: 10px auto 0;
   /* 左右autoで.fv__bottom内の中央に配置。上にも少し余白を確保 */
-  font-size: 0.68rem;
+  font-size: 0.58rem;
   /* 0.65rem→0.58rem */
   color: var(--color-cream);
   opacity: 0.9;
   text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
   flex-wrap: wrap;
 
-  /* ---- ここから追加：ネイビーの半透明すりガラスパネル ---- */
+  /* ---- ここから追加：透明（白ベース）のすりガラスパネル ---- */
   padding: 8px 14px;
   /* 12px 22px→8px 14px */
   border-radius: 999px;
   /* 999pxのように十分大きい値にすると、角がすべて丸まって
      「ピル（カプセル）形状」のバッジになります */
-  background: rgba(27, 42, 74, 0.45);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
