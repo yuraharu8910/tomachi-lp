@@ -406,14 +406,17 @@ document.addEventListener('DOMContentLoaded', function () {
     },
     {
       // ② 花火（迫力・観覧の魅力）
+      // 見出し2行目は①の「夏花火ナイト。」と同じ7文字に揃えることで、
+      // 同じ画面幅・同じ文字サイズでも2行に収まるようにしています
       kicker: '川沿いで見る、3,000発',
-      title: '顔に届く<br>くらいの<span class="fv__title-accent">迫力</span><span class="fv__title-nowrap">を。</span>',
+      title: '顔に届く<br>くらいの<span class="fv__title-accent">迫力</span><span class="fv__title-nowrap">を</span>',
       lead: '混雑は激しくない、ちょうどいい特等席。<br>終わってもすぐ電車に乗れる近さです'
     },
     {
       // ③ 商店街（食べ歩き・夜のそぞろ歩き）
+      // こちらも2行目を7文字に調整
       kicker: '夕方から、ふらっと',
-      title: '商店街で<br><span class="fv__title-accent">食べ歩き</span><span class="fv__title-nowrap">する夏。</span>',
+      title: '商店街で<br><span class="fv__title-accent">食べ歩き</span><span class="fv__title-nowrap">する夏</span>',
       lead: '提灯の灯る夜道を歩くだけで、<br>もう夏の思い出に。<br>気づいたら花火の時間です'
     }
   ];
