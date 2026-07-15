@@ -218,7 +218,7 @@ a {
 }
 
 .fv__lead {
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   /* 0.85rem→0.72remに縮小。スマホでガラス板が大きくなりすぎて
      キャラクターを隠してしまわないようにするための調整 */
   line-height: 1.6;
@@ -233,7 +233,7 @@ a {
   /* pタグは本来ブロック要素で横幅いっぱいに伸びますが、
      inline-blockにすることで「中の文字の横幅ぴったり」の
      バッジ（ガラス板）として見せられます */
-  padding: 7px 12px;
+  padding: 5px 10px;
   /* 10px 16px→7px 12px。文字サイズを縮小した分、余白も比例して縮小 */
   border-radius: 10px;
   background: rgba(27, 42, 74, 0.45);
